@@ -1,0 +1,58 @@
+FROM friedrich-j/wine
+
+RUN echo 'export WINEARCH=win32' >> /etc/profile && \
+	echo 'export WINEPREFIX=/home/desktop/.wine32' >> /etc/profile
+
+RUN apt-get install -y bash
+
+USER desktop
+RUN . /etc/profile && \
+	bash /usr/scripts/start_display.sh && \
+	. ~/display.env && \
+	mkdir -p /tmp/downloads && cd /tmp/downloads && \
+	( wineboot --update ) & ( pid=$!; sleep 30; kill $pid; echo ) && \
+	cd /tmp/downloads && \
+	. ~/display.env && \
+	curl -L https://sourceforge.net/projects/wine/files/Wine%20Mono/4.5.6/wine-mono-4.5.6.msi/download > wine-mono.msi && \
+	wine msiexec /i wine-mono.msi /qn && \
+	echo "pwd: $pwd" && \
+	curl -L https://sourceforge.net/projects/wine/files/Wine%20Gecko/2.40/wine_gecko-2.40-x86_64.msi/download > wine-gecko.msi && \
+	ls -dl * && \
+	wine msiexec /i wine_gecko.msi /qn
+#	curl -L http://support.apple.com/downloads/DL999/en_US/BonjourPSSetup.exe > BonjourPSSetup.exe && \
+#	cabextract BonjourPSSetup.exe && \
+#	wine msiexec /i Bonjour.msi /qn && \
+#	curl -L `curl -s https://agilebits.com/downloads | grep -e 'release.*exe'  | sed -r 's/^(.*) href="(.*)"(.*)/\2/'` > 1p-setup.exe && \
+#	wine 1p-setup.exe /verysilent /lang=en
+
+#	curl -L `curl -s https://agilebits.com/downloads | grep -e 'release.*exe'  | sed -r 's/^(.*) href="(.*)"(.*)/\2/'` > /tmp/1p-setup.exe
+#RUN echo "#$DISPLAY#$T#" && wine /tmp/1p-setup.exe
+ENTRYPOINT [ "/bin/bash" ]
+
+########
+########
+
+#RUN mkdir -p ~/tmp && cd ~/tmp && \
+#	curl -L https://sourceforge.net/projects/wine/files/Wine%20Mono/4.5.6/wine-mono-4.5.6.msi/download > wine-mono.msi && \
+#	wine msiexec /i wine-mono.msi && \
+#	curl -L https://sourceforge.net/projects/wine/files/Wine%20Gecko/2.40/wine_gecko-2.40-x86_64.msi/download > wine-gecko.msi && \
+#	wine msiexec /i wine_gecko.msi
+
+#curl -L http://support.apple.com/downloads/DL999/en_US/BonjourPSSetup.exe > BonjourPSSetup.exe
+#cabextract BonjourPSSetup.exe
+#wine msiexec /i Bonjour64.msi /qn
+
+
+# wine /tmp/1p-setup.exe /verysilent /lang=en
+# wine ~/'.wine/drive_c/Program Files (x86)/1Password 4/1password.exe' & ; \
+#sleep 5 && \
+#w=`xdotool search --name Frm1pWelcome` && \
+#xvkbd -window 18874373 -text ' ' && \
+#xdotool type -window 18874373 ' '
+
+
+
+#export WINEARCH=win32
+#export WINEPREFIX=~/.wine32
+#wine msiexec /i Bonjour.msi
+#wine ~/'.wine32/drive_c/Program Files/1Password 4/1password.exe'

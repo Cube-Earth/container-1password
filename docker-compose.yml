@@ -1,0 +1,21 @@
+version: '2'
+services:
+  main:
+    build: .
+    image: cubeearth/1password:ubuntu_bionic
+    volumes:
+    - $HOME/.containers/xpra/sockets:/var/run/xpra:rw
+#    networks:
+#      outerrim:
+#        ipv4_address: 192.168.216.8
+
+#networks:
+#  outerrim:
+#    driver: bridge
+##    driver_opts:
+##      com.docker.network.enable_ipv6: "true"
+#    ipam:
+#      driver: default
+#      config:
+#      - subnet: 192.168.216.0/8
+#        gateway: 192.168.216.250
